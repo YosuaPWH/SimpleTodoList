@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.activity_main.*
+import java.io.BufferedReader
 
 class MainActivity : AppCompatActivity() {
     private lateinit var rvToDoList: RecyclerView
@@ -14,6 +15,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         rvToDoList = findViewById(R.id.rv_todolist)
+        addDataFromResources()
 
         list.addAll(DataList.dataKu)
 
@@ -35,4 +37,17 @@ class MainActivity : AppCompatActivity() {
             todoListAdapter.deleteTodoList()
         }
     }
+
+    private fun addDataFromResources() {
+        val buffer: BufferedReader = resources.openRawResource(R.raw.datatodo).bufferedReader()
+
+        var line: String = buffer.readLine()
+        while (line != null) {
+            line.split(",").apply {
+                DataList.addTodo(this[0], this[1].toBoolean())
+            }
+            line = buffer.readLine() ?: break
+        }
+    }
+
 }
